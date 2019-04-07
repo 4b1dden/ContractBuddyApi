@@ -1,3 +1,5 @@
+const PDFParser = require('pdf2json');
+
 function ParsePdf(pdf, callback){
     var pdfParser = new PDFParser()
     

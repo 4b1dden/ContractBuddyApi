@@ -36,7 +36,6 @@ module.exports = (config, ocr) => {
     form.parse(req);
 
     form.on('fileBegin', (name, file) => {
-        console.log('filebegin');
       file.path = config.uploadPath + '/' + file.name
     });
 
