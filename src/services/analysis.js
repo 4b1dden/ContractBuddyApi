@@ -31,15 +31,13 @@ const analyseTextByValues = (content) => {
     sentences.map(sentence => {
         let words = sentence.split(" ");
         let sentenceBreakdown = {
-            sentence: sentence.trim(),
+            sentence: sentence,
             value: 0, 
             tooltips: {}
         };
 
         words.map(word => {
-            // if (!isNaN(word)) {
-            //     sentenceBreakdown.value += 0.5;
-            // } else {
+            if (!word.endsWith("\n")) {
                 let stem = stemr.stem(word).toLowerCase();
                 if (keywords[stem]) {
                     sentenceBreakdown.value += keywords[stem].value;
@@ -48,7 +46,7 @@ const analyseTextByValues = (content) => {
                 if (tooltips[stem]) {
                     sentenceBreakdown.tooltips[stem] = tooltips[stem];
                 }
-            // }
+            }
         });
 
         const charAvg = sentenceBreakdown.value / sentenceBreakdown.sentence.length;
