@@ -15,6 +15,11 @@ function GetHighlightsHTML(content, threshold){
             if (tooltips[word]) {
                 word = `<a href='#' title="${tooltips[word]}">${word}</a>`
             }
+
+            if (word.indexOf("\n") > -1) {
+                word = word.replace("\n", "<br />");
+            } 
+
             return word
         }).join(' ');
 
