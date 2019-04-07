@@ -13,12 +13,14 @@ module.exports = (config, ocr) => {
   const app = express.Router();
 
   // fixing cors error on client in dev env
-//   app.use(cors({origin: "http://localhost:4200"}));
-    app.use(function(req, res, next) {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        next();
-    });
+  app.use(cors({origin: "http://localhost:4200"}));
+  app.use(cors({origin: "https://contractbuddy.herokuapp.com"}));
+
+    // app.use(function(req, res, next) {
+    //     res.header("Access-Control-Allow-Origin", "*");
+    //     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    //     next();
+    // });
 
   app.post('/getHighlights/text', (req, res) => {
     const threshold = req.body["threshold"] || config.thresholdPerWord;
