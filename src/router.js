@@ -37,17 +37,7 @@ module.exports = (config, ocr) => {
     form.parse(req);
 
     form.on('fileBegin', (name, file) => {
-        fs.access(config.uploadPath, function(err) {
-            if (err && err.code === 'ENOENT') {
-                fs.mkdir(config.uploadPath, (err) => {
-                    console.log("/uploads directory in root was created");
-                    file.path = config.uploadPath + '/' + file.name
-                }); 
-            } else {
-                console.log('else');
-                file.path = config.uploadPath + '/' + file.name
-            }
-        });
+        file.path = config.uploadPath + '/' + file.name;
     });
 
     form.on('file', (name, file) => {
