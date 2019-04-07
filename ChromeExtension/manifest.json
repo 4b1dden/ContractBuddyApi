@@ -1,0 +1,17 @@
+{
+  "name": "ContractBuddy",
+  "version": "1.0",
+  "description": "ContractBuddy helps you undertand your legal bindings",
+  "manifest_version": 2,
+  "permissions": [
+    "notifications",
+    "activeTab"
+  ],
+  "browser_action": {
+    "default_title": "Analyze selection as a contract"
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  }
+}

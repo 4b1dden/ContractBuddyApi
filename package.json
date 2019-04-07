@@ -1,0 +1,29 @@
+{
+  "name": "contractbuddy",
+  "version": "1.0.0",
+  "description": "ContractBuddy",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdamBobocky/ContractBuddy.git"
+  },
+  "author": "SWBA ContractBuddy team",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AdamBobocky/ContractBuddy/issues"
+  },
+  "homepage": "https://github.com/AdamBobocky/ContractBuddy#readme",
+  "dependencies": {
+    "aws-sdk": "^2.432.0",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "formidable": "^1.2.1",
+    "googleapis": "^39.2.0",
+    "pdf2json": "^1.1.8",
+    "stemr": "^1.0.0"
+  }
+}
