@@ -8,6 +8,7 @@ module.exports = (config, ocr) => {
   const responseHandler = require('./services/responseHandler');
   const constants = require('./constants');
   const cors = require("cors");
+  const fs = require('fs');
 
   const app = express.Router();
 
@@ -36,7 +37,17 @@ module.exports = (config, ocr) => {
     form.parse(req);
 
     form.on('fileBegin', (name, file) => {
-      file.path = config.uploadPath + '/' + file.name
+        fs.access(config.uploadPath, function(err) {
+            if (err && err.code === 'ENOENT') {
+                fs.mkdir(config.uploadPath, (err) => {
+                    console.log("/uploads directory in root was created");
+                    file.path = config.uploadPath + '/' + file.name
+                }); 
+            } else {
+                console.log('else');
+                file.path = config.uploadPath + '/' + file.name
+            }
+        });
     });
 
     form.on('file', (name, file) => {
