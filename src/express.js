@@ -1,7 +1,8 @@
-module.exports = (config, ocr) => {
+module.exports = (config, ocr, db) => {
   var express = require('express')
   var bodyParser = require('body-parser')
 
+  var googleAuth = require('./services/googleAuth.js')(config, db)
   var router = require('./router.js')(config, ocr)
   var app = express()
   
@@ -12,9 +13,8 @@ module.exports = (config, ocr) => {
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(express.static(config.publicPath))
 
+  app.use('/google', googleAuth)
   app.use('/', router)
-
-  var auth = require('./services/googleAuth')(config, app)
 
   app.listen(config.port)
 

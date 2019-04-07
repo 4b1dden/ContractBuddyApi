@@ -24,6 +24,8 @@
     "express": "^4.16.4",
     "formidable": "^1.2.1",
     "googleapis": "^39.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.4.22",
     "pdf2json": "^1.1.8",
     "stemr": "^1.0.0"
   }
