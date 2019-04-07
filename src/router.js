@@ -1,14 +1,18 @@
 module.exports = (config, ocr) => {
-  const express = require('express')
-  const formidable = require('formidable')
-  const tooltips = require('./tooltips.json')
-  const PDFParser = require('pdf2json')
+  const express = require('express');
+  const formidable = require('formidable');
+  const tooltips = require('./tooltips.json');
+  const PDFParser = require('pdf2json');
   const highlighter = require("./services/highlighter");
   const pdfService = require("./services/pdfService");
   const responseHandler = require('./services/responseHandler');
   const constants = require('./constants');
+  const cors = require("cors");
 
   const app = express.Router();
+
+  // fixing cors error on client in dev env
+  app.use(cors({origin: "http://localhost:4200"}));
 
   app.post('/getHighlights/text', (req, res) => {
     const threshold = req.body["threshold"] || config.thresholdPerWord;

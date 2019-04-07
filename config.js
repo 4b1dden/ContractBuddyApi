@@ -9,5 +9,6 @@ module.exports = {
     clientId: '', // e.g. asdfghjkljhgfdsghjk.apps.googleusercontent.com
     clientSecret: '' // e.g. _ASDFA%DFASDFASDFASD#FAD-
   },
-  version: 1
+  version: 1,
+  shouldHaveAllowCORS: true
 }

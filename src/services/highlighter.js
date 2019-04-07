@@ -16,7 +16,7 @@ function GetHighlightsHTML(content, threshold){
             }
             return word
         }).join(' ');
-
+        
         if(sentenceObject.wordAverage >= threshold && (sentenceObject.sentence.length != 1 && isNaN(sentenceObject.sentence))){
             output += '<font style="background-color: yellow;">' + sentenceObject.sentence + '.</font> '
         } else {

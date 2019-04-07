@@ -25,13 +25,15 @@ const analyseTextByValues = (content) => {
     if (typeof content != "string") return [];
 
     const keywords = require("../keywords.json");
+    const tooltips = require('../tooltips.json');
     let results = [];
     let sentences = content.split(".");
     sentences.map(sentence => {
         let words = sentence.split(" ");
         let sentenceBreakdown = {
             sentence: sentence.trim(),
-            value: 0
+            value: 0, 
+            tooltips: {}
         };
 
         words.map(word => {
@@ -41,6 +43,10 @@ const analyseTextByValues = (content) => {
                 let stem = stemr.stem(word).toLowerCase();
                 if (keywords[stem]) {
                     sentenceBreakdown.value += keywords[stem].value;
+                }
+
+                if (tooltips[stem]) {
+                    sentenceBreakdown.tooltips[stem] = tooltips[stem];
                 }
             // }
         });

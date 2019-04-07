@@ -19,6 +19,7 @@
   "homepage": "https://github.com/AdamBobocky/ContractBuddy#readme",
   "dependencies": {
     "aws-sdk": "^2.432.0",
+    "cors": "^2.8.5",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "formidable": "^1.2.1",
