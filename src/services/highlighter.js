@@ -6,13 +6,15 @@ function GetHighlights(content){
 }
 
 function GetHighlightsHTML(content, threshold){
-    var output = ''
+    output = {}
+    output.html = '';
+    output.highlights = '';
     var analysis = analyser.analyseText(content)
 
     analysis.forEach(sentenceObject => {
         sentenceObject.sentence = sentenceObject.sentence.split(" ").map(word => {
             if (tooltips[word]) {
-                word = `<a href='#' title="${tooltips[word]}">${word}</a>`
+                word = `<a href='javascript:void(0)' title="${tooltips[word]}">${word}</a>`
             }
 
             if (word.indexOf("\n") > -1) {
@@ -23,12 +25,14 @@ function GetHighlightsHTML(content, threshold){
         }).join(' ');
 
         if(sentenceObject.wordAverage >= threshold && (sentenceObject.sentence.length != 1 && isNaN(sentenceObject.sentence))){
-            output += '<font style="background-color: yellow;">' + sentenceObject.sentence + '.</font> '
+            output.html += '<font style="background-color: yellow;">' + sentenceObject.sentence + '.</font> '
+            sentenceObjectReplaced = sentenceObject.sentence.replace('<br />', ' ')
+            output.highlights += '<font style="background-color: yellow;">' + sentenceObjectReplaced + '.</font><br />'
+
         } else {
-            output += sentenceObject.sentence + '. '
+            output.html += sentenceObject.sentence + '. '
         }
     })
-
     return output;
 }
 
