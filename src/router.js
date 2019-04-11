@@ -9,6 +9,7 @@ module.exports = (config, ocr) => {
   const constants = require('./constants');
   const cors = require("cors");
   const fs = require('fs');
+  const analyser = require("./services/analysis");
 
   const app = express.Router();
 
@@ -59,6 +60,19 @@ module.exports = (config, ocr) => {
       }
     })
   });
+
+  app.post("/dev/env/weight", (req, res) => {
+      const threshold = req.body.threshold;
+      const keywords = typeof req.body.keywords == "string" ? JSON.parse(req.body.keywords) : req.body.keywords;
+      const text = req.body.text;
+
+      if (threshold && keywords && text) {
+          const analysis = analyser.injectCustomKeywordsForAnalysis(text, keywords);
+          responseHandler.sendSuccessResponse(res, analysis);
+      } else {
+          return responseHandler.sendErrorResponse(res, constants.ERROR_RESPONSES.MISSING_PARAMETERS);
+      }
+  })
 
   return app
 }

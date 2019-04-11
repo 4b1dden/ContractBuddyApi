@@ -21,10 +21,11 @@ function translateWrittenNumbers(words) {
     return words;
 }
 
-const analyseTextByValues = (content) => {
+const analyseTextByValues = (content, customKeywords) => {
     if (typeof content != "string") return [];
 
-    const keywords = require("../keywords.json");
+    const keywords = customKeywords || require("../keywords.json");
+    console.log(keywords);
     const tooltips = require('../tooltips.json');
     let results = [];
     let sentences = content.split(".");
@@ -37,9 +38,11 @@ const analyseTextByValues = (content) => {
         };
 
         words.map(word => {
+            word = word.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+            console.log(word);
             if (!word.endsWith("\n")) {
                 let stem = stemr.stem(word).toLowerCase();
-                if (keywords[stem]) {
+                if (keywords[stem] || keywords[word]) {
                     sentenceBreakdown.value += keywords[stem].value;
                 }
 
@@ -123,6 +126,10 @@ function analyseText(content){
     return analyseTextByValues(content)
 }
 
+function injectCustomKeywordsForAnalysis(content, keywords) {
+    return typeof keywords == "object" ? analyseTextByValues(content, keywords) : [];
+}
+
 /*fs.readFile(fileName, 'utf8', (err, content) => {
     if (err) throw err;
     
@@ -136,5 +143,6 @@ function analyseText(content){
 module.exports = {
     analyseText,
     analyseTextByValues,
-    analyseTextByRules
+    analyseTextByRules,
+    injectCustomKeywordsForAnalysis
 }
