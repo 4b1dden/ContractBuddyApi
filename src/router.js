@@ -14,8 +14,8 @@ module.exports = (config, ocr) => {
   const app = express.Router();
 
   // fixing cors error on client in dev env
-  //app.use(cors({origin: "http://localhost:4200"}));
-  app.use(cors({origin: "https://contractbuddy1.herokuapp.com"}));
+  app.use(cors({origin: "http://localhost:4200"}));
+  //app.use(cors({origin: "https://contractbuddy1.herokuapp.com"}));
 
   app.post('/getHighlights/text', (req, res) => {
     const threshold = req.body["threshold"] || config.thresholdPerWord;
@@ -27,6 +27,20 @@ module.exports = (config, ocr) => {
         return responseHandler.sendSuccessResponse(res, {
             rawHtml: html,
             highlights: highlights
+        });
+    } else {
+        return responseHandler.sendErrorResponse(res, constants.ERROR_RESPONSES.NO_TEXT_PROVIDED);
+    }
+  });
+
+  app.post('/getNotifications', (req, res) => {
+    const rawText = req.body.text;
+    if (rawText) {
+        let notifications = highlighter.GetNotifications(rawText);
+
+        return responseHandler.sendSuccessResponse(res, {
+            date: notifications.date,
+            period: notifications.priorPeriod,
         });
     } else {
         return responseHandler.sendErrorResponse(res, constants.ERROR_RESPONSES.NO_TEXT_PROVIDED);
