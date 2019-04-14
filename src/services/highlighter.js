@@ -9,17 +9,19 @@ function GetNotifications(content) {
     var regexpDateSentence = /\Termination [^.]+(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})/igm
     var regexpDate = /(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})/gm
     var regexpPriorSentence = [
-        /\ ([0-9]+)\ days prior [^.]+ terminat/igm,
-        /\ cancel [^.]+([0-9]+)[^.]+\ days[^.]+\ notice/igm,
-        /([0-9]+)\ days[^.]+\ notice [^.]+ end/igm,
-        /\ notice [^.]+\ ([0-9]+)\ days[^.]+\ end/igm,
-        /([0-9]+)\ days[^.]+\ notice [^.]+\ terminat/igm,
-        // /\ end [^.]+\ notice [^.]+ ([0-9]+)\ days/igm,
-        /\ notice [^.]+ ([0-9]+)\ days/igm,
+        /([0-9]+) (days|weeks|months) prior (?:.(?!\. ))+ terminat/igm,
+        / cancel(?:.(?!\. ))+ ([0-9]+) (days|weeks|months)(?:.(?!\. ))+ notice/igm,
+        /([0-9]+) (days|weeks|months)(?:.(?!\. ))+ notice (?:.(?!\. ))+ end/igm,
+        / notice (?:.(?!\. ))+ ([0-9]+) (days|weeks|months)(?:.(?!\. ))+ end/igm,
+        /([0-9]+) (days|weeks|months)(?:.(?!\. ))+ notice (?:.(?!\. ))+ terminat/igm,
+        / end (?:.(?!\. ))+ notice (?:.(?!\. ))+\s([0-9]+) (days|weeks|months)/igm,
+        / notice (?:.(?!\. ))+ ([0-9]+) (days|weeks|months)/igm,
     ]
-    var regexpPrior = /([0-9]+)/
+    var regexpPriorDays = /([0-9]+) days/
+    var regexpPriorWeeks = /([0-9]+) weeks/
+    var regexpPriorMonths = /([0-9]+) months/
     var regexAnyTime = [
-        /\ may cancel [^.]+ any time/igm
+        / may cancel (?:.(?!\. ))+ any time/igm
     ];
     var dates = []
     var periods = []
@@ -28,11 +30,6 @@ function GetNotifications(content) {
     dates = dates.concat(content.match(regexpDateSentence))
     for (let i = 0; i < regexpPriorSentence.length; i++) {
         periods = periods.concat(content.match(regexpPriorSentence[i]));
-    }
-    for (let i = 0; i < regexAnyTime.length; i++) {
-        if (content.match(regexAnyTime[i])) {
-            periods = periods.concat(0);
-        }
     }
 
     var newDates = [];
@@ -51,16 +48,30 @@ function GetNotifications(content) {
     if (periods.length > 0) {
         periods.forEach((item, i) => {
             if (item) {
-                newPeriods[i] = item.match(regexpPrior)[0]
-            }
-            if (item === 0) {
-                newPeriods[i] = 0;
+                if (item.match(regexpPriorDays)) {
+                    newPeriods[i] = item.match(regexpPriorDays)[1]
+                }
+                if (item.match(regexpPriorWeeks)) {
+                    newPeriods[i] = item.match(regexpPriorWeeks)[1] * 7
+                }
+                if (item.match(regexpPriorMonths)) {
+                    newPeriods[i] = item.match(regexpPriorMonths)[1] * 30
+                }
             }
         });     
         newPeriods = newPeriods.filter ((value, index, array) => { 
             return array.indexOf (value) == index
         })
     }
+
+    if (newPeriods.length === 0) {
+        for (let i = 0; i < regexAnyTime.length; i++) {
+            if (content.match(regexAnyTime[i])) {
+                newPeriods = [0];
+            }
+        }
+    }
+
     if (newPeriods.length === 1 && newDates.length === 1) {
         output.date = newDates[0]
         output.priorPeriod = newPeriods[0]
