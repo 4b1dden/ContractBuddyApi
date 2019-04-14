@@ -6,22 +6,39 @@ function GetHighlights(content){
 }
 
 function GetNotifications(content) {
-    var regexpDateSentence = /\Termination [^.]+(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})/ig
-    var regexpDate = /(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})/
-    var regexpPriorSentence = /\ ([0-9]+)\ days prior [^.]+termination/
+    var regexpDateSentence = /\Termination [^.]+(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})/igm
+    var regexpDate = /(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})/gm
+    var regexpPriorSentence = [
+        /\ ([0-9]+)\ days prior [^.]+ terminat/igm,
+        /\ cancel [^.]+([0-9]+)[^.]+\ days[^.]+\ notice/igm,
+        /([0-9]+)\ days[^.]+\ notice [^.]+ end/igm,
+        /\ notice [^.]+\ ([0-9]+)\ days[^.]+\ end/igm,
+        /([0-9]+)\ days[^.]+\ notice [^.]+\ terminat/igm,
+        // /\ end [^.]+\ notice [^.]+ ([0-9]+)\ days/igm,
+        /\ notice [^.]+ ([0-9]+)\ days/igm,
+    ]
     var regexpPrior = /([0-9]+)/
+    var regexAnyTime = [
+        /\ may cancel [^.]+ any time/igm
+    ];
     var dates = []
     var periods = []
     output = {}
 
-    dates.push(content.match(regexpDateSentence))
-    periods.push(content.match(regexpPriorSentence))
+    dates = dates.concat(content.match(regexpDateSentence))
+    for (let i = 0; i < regexpPriorSentence.length; i++) {
+        periods = periods.concat(content.match(regexpPriorSentence[i]));
+    }
+    for (let i = 0; i < regexAnyTime.length; i++) {
+        if (content.match(regexAnyTime[i])) {
+            periods = periods.concat(0);
+        }
+    }
 
     var newDates = [];
     var newPeriods = [];
 
-    if (dates[0]) {
-        dates = dates[0]
+    if (dates.length > 0) {
         dates.forEach((item, i) => {
             if (item) {
                 newDates[i] = item.match(regexpDate)[0]
@@ -31,13 +48,15 @@ function GetNotifications(content) {
             return array.indexOf (value) == index
         })
     }
-    if (periods[0]) {
-        periods = periods[0]
+    if (periods.length > 0) {
         periods.forEach((item, i) => {
             if (item) {
                 newPeriods[i] = item.match(regexpPrior)[0]
             }
-        });
+            if (item === 0) {
+                newPeriods[i] = 0;
+            }
+        });     
         newPeriods = newPeriods.filter ((value, index, array) => { 
             return array.indexOf (value) == index
         })
