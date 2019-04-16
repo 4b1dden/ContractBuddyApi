@@ -48,7 +48,7 @@ module.exports = (config, ocr) => {
   });
 
   app.get("/", (req, res) => {
-      res.render("service running");
+      res.send("service running");
   })
 
   app.post('/ocr/upload', (req, res) => {
