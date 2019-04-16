@@ -47,7 +47,7 @@ module.exports = (config, ocr) => {
     }
   });
 
-  app.get("/test", (req, res) => {
+  app.get("/", (req, res) => {
       res.render("service running");
   })
 
