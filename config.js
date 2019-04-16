@@ -4,7 +4,7 @@ module.exports = {
   viewsPath: __dirname + '/views',
   publicPath: __dirname + '/public',
   uploadPath: __dirname + '/uploads',
-  thresholdPerWord: 0.15,
+  wordAverageThreshold: 0.2,
   sessionSecret: 'jfgdjkgvbhbasghfjibn',
   mongoConnectionString: 'mongodb+srv://dbUser:bejnamin222@cluster0-qshkb.mongodb.net/test?retryWrites=true',
   googleAuth: {

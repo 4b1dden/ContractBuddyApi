@@ -14,11 +14,12 @@ module.exports = (config, ocr) => {
   const app = express.Router();
 
   // fixing cors error on client in dev env
-  app.use(cors({origin: "https://contractbuddy.herokuapp.com"}));
-//   app.options('*', cors());
+  const prod = true;
+  app.use(cors({origin: prod ? "https://contractbuddy.herokuapp.com" : "http://localhost:4200"}));
+  app.options('*', cors());
 
   app.post('/getHighlights/text', (req, res) => {
-    const threshold = req.body["threshold"] || config.thresholdPerWord;
+    const threshold = req.body["threshold"] || config.wordAverageThreshold;
     const rawText = req.body.text;
     if (rawText) {
         let html = highlighter.GetHighlightsHTML(rawText, threshold);

@@ -1,0 +1,47 @@
+{
+    "termin": {
+        "value": 1
+    },
+    "contract": {
+        "value": 0.7
+    },
+    "extend": {
+        "value": 1
+    },
+    "period": {
+        "value": 1
+    },
+    "month": {
+        "value": 1
+    },
+    "day": {
+        "value": 1
+    },
+    "date": {
+        "value": 0.5
+    },
+    "written": {
+        "value": 0.5
+    },
+    "write": {
+        "value": 0.5
+    },
+    "form": {
+        "value": 0.6
+    },
+    "14": {
+        "value": 0.5
+    },
+    "3": {
+        "value": 0.5
+    },
+    "1": {
+        "value": 0.5
+    },
+    "payment": {
+        "value": 0.9
+    },
+    "pay": {
+        "value": 0.9
+    }
+}

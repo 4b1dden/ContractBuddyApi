@@ -32,28 +32,48 @@ const analyseTextByValues = (content, customKeywords) => {
         let words = sentence.split(" ");
         let sentenceBreakdown = {
             sentence: sentence,
-            value: 0, 
+            analysis: {
+                totalValue: 0,
+                clauses: {}
+            }, 
             tooltips: {}
         };
+
+        keywords.map(collection => {
+            sentenceBreakdown.analysis.clauses[collection.clause] = {
+                value: 0,
+                charAvg: 0,
+                wordAvg: 0
+            }
+        });
+
+        const keywordColumn = 0;
+        const wordCount = sentenceBreakdown.sentence.trim().split(" ").length;
+        const charCount = sentenceBreakdown.sentence.length;
 
         words.map(word => {
             word = word.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
             if (!word.endsWith("\n")) {
                 let stem = stemr.stem(word).toLowerCase();
-                if (keywords[stem] || keywords[word]) {
-                    sentenceBreakdown.value += keywords[stem].value;
-                }
-
+                keywords.map(collection => {
+                    if (collection.keywords[stem]) {
+                        sentenceBreakdown.analysis.clauses[collection.clause].value += collection.keywords[stem][keywordColumn];
+                        sentenceBreakdown.analysis.clauses[collection.clause].charAvg += sentenceBreakdown.analysis.clauses[collection.clause].value / charCount;
+                        sentenceBreakdown.analysis.clauses[collection.clause].wordAvg += sentenceBreakdown.analysis.clauses[collection.clause].value / wordCount;
+                    }
+                })
+                
                 if (tooltips[stem]) {
                     sentenceBreakdown.tooltips[stem] = tooltips[stem];
                 }
             }
         });
 
-        const charAvg = sentenceBreakdown.value / sentenceBreakdown.sentence.length;
-        const wordAvg = sentenceBreakdown.value / sentenceBreakdown.sentence.trim().split(" ").length
-        sentenceBreakdown.charAverage = charAvg;
-        sentenceBreakdown.wordAverage = wordAvg;
+        keywords.map(collection => sentenceBreakdown.analysis.totalValue += sentenceBreakdown.analysis.clauses[collection.clause].value);
+
+        sentenceBreakdown.analysis.totalWordAvg = sentenceBreakdown.analysis.totalValue / wordCount;
+        sentenceBreakdown.analysis.totalCharAvg = sentenceBreakdown.analysis.totalValue / charCount;
+
         results.push(sentenceBreakdown);
     });
 

@@ -87,6 +87,8 @@ function GetHighlightsHTML(content, threshold){
 
     analysis.forEach(sentenceObject => {
         sentenceObject.sentence = sentenceObject.sentence.split(" ").map(word => {
+            // to eliminate edge cases where "sentence" with single number would be highlighted
+            sentenceObject.ignore = sentenceObject.sentence.length <= 3 && !isNaN(sentenceObject.sentence);
             if (tooltips[word]) {
                 word = `<a href='javascript:void(0)' title="${tooltips[word]}">${word}</a>`
             }
@@ -98,11 +100,10 @@ function GetHighlightsHTML(content, threshold){
             return word
         }).join(' ');
 
-        if(sentenceObject.wordAverage >= threshold && (sentenceObject.sentence.length != 1 && isNaN(sentenceObject.sentence))){
+        if(sentenceObject.analysis.totalWordAvg >= threshold && !sentenceObject.ignore) {
             output.html += '<font style="background-color: yellow;">' + sentenceObject.sentence + '.</font> '
             sentenceObjectReplaced = sentenceObject.sentence.replace('<br />', ' ')
             output.highlights += '<font style="background-color: yellow;">' + sentenceObjectReplaced + '.</font><br />'
-
         } else {
             output.html += sentenceObject.sentence + '. '
         }
