@@ -15,7 +15,7 @@ module.exports = (config, ocr) => {
 
   // fixing cors error on client in dev env
   app.use(cors({origin: "http://localhost:4200"}));
-  //app.use(cors({origin: "https://contractbuddy1.herokuapp.com"}));
+  app.use(cors({origin: "https://contractbuddy.herokuapp.com"}));
 
   app.post('/getHighlights/text', (req, res) => {
     const threshold = req.body["threshold"] || config.thresholdPerWord;
