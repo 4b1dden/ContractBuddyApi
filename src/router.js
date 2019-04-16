@@ -47,6 +47,10 @@ module.exports = (config, ocr) => {
     }
   });
 
+  app.get("/test", (req, res) => {
+      res.render("service running");
+  })
+
   app.post('/ocr/upload', (req, res) => {
     var form = new formidable.IncomingForm()
 
