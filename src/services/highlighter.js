@@ -55,7 +55,7 @@ function GetNotifications(content) {
                     newPeriods[i] = item.match(regexpPriorWeeks)[1] * 7
                 }
                 if (item.match(regexpPriorMonths)) {
-                    newPeriods[i] = item.match(regexpPriorMonths)[1] * 30
+                    newPeriods[i] = item.match(regexpPriorMonths)[1] + 'm'
                 }
             }
         });     
