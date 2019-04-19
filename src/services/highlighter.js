@@ -6,20 +6,25 @@ function GetHighlights(content){
 }
 
 function GetNotifications(content) {
+    content = content.replace(/\r?\n|\r/g, " ")
     var regexpDateSentence = /\Termination [^.]+(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})/igm
     var regexpDate = /(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})/gm
     var regexpPriorSentence = [
-        /([0-9]+) (days|weeks|months) prior (?:.(?!\. ))+ terminat/igm,
-        / cancel(?:.(?!\. ))+ ([0-9]+) (days|weeks|months)(?:.(?!\. ))+ notice/igm,
-        /([0-9]+) (days|weeks|months)(?:.(?!\. ))+ notice (?:.(?!\. ))+ end/igm,
-        / notice (?:.(?!\. ))+ ([0-9]+) (days|weeks|months)(?:.(?!\. ))+ end/igm,
-        /([0-9]+) (days|weeks|months)(?:.(?!\. ))+ notice (?:.(?!\. ))+ terminat/igm,
-        / end (?:.(?!\. ))+ notice (?:.(?!\. ))+\s([0-9]+) (days|weeks|months)/igm,
-        / notice (?:.(?!\. ))+ ([0-9]+) (days|weeks|months)/igm,
+        /([0-9]+) (day|week|month)*s prior *(?:.(?!\. ))+terminat/igm,
+        / cancel*(?:.(?!\. ))+ ([0-9]+) (day|week|month)*(?:.(?!\. ))+ notice/igm,
+        /([0-9]+) (day|week|month)*(?:.(?!\. ))+ notice (?:.(?!\. ))+ end/igm,
+        / notice *(?:.(?!\. ))+ ([0-9]+) (day|week|month)(?:.(?!\. ))+ end/igm,
+        /([0-9]+) (day|week|month)*(?:.(?!\. ))+ notice (?:.(?!\. ))+ terminat/igm,
+        / end (?:.(?!\. ))+ notice *(?:.(?!\. ))+\s([0-9]+) (day|week|month)/igm,
+        // / notice *(?:.(?!\. ))+ ([0-9]+) (days|weeks|months)/igm,
     ]
-    var regexpPriorDays = /([0-9]+) days/
-    var regexpPriorWeeks = /([0-9]+) weeks/
-    var regexpPriorMonths = /([0-9]+) months/
+    var regexpPriorDays = /([0-9]+) day/i
+    var regexpPriorWeeks = /([0-9]+) week/i
+    var regexpPriorMonths = /([0-9]+) month/i
+    var regexpRemove = [
+        / section ([0-9]+) /igm,
+        / (?:[2-9]|\d\d\d*) day /igm
+    ];
     var regexAnyTime = [
         / may cancel (?:.(?!\. ))+ any time/igm
     ];
@@ -45,9 +50,13 @@ function GetNotifications(content) {
             return array.indexOf (value) == index
         })
     }
+    console.log(periods)
     if (periods.length > 0) {
         periods.forEach((item, i) => {
             if (item) {
+                regexpRemove.forEach((regexp) => {
+                    item = item.replace(regexp, '')
+                })
                 if (item.match(regexpPriorDays)) {
                     newPeriods[i] = item.match(regexpPriorDays)[1]
                 }
@@ -71,7 +80,8 @@ function GetNotifications(content) {
             }
         }
     }
-
+    console.log(newDates);
+    console.log(newPeriods);
     if (newPeriods.length === 1 && newDates.length === 1) {
         output.date = newDates[0]
         output.priorPeriod = newPeriods[0]
