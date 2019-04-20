@@ -9,9 +9,13 @@ module.exports = (config, ocr) => {
   const constants = require('./constants');
   const cors = require("cors");
   const fs = require('fs');
+  const path = require('path');
   const analyser = require("./services/analysis");
 
   const app = express.Router();
+
+  const devDictionary = "keywords_dev.json";
+  const prodDictionary = "keywords.json";
 
   // fixing cors error on client in dev env
   const prod = true;
@@ -21,8 +25,9 @@ module.exports = (config, ocr) => {
   app.post('/getHighlights/text', (req, res) => {
     const threshold = req.body["threshold"] || config.wordAverageThreshold;
     const rawText = req.body.text;
+    const analysis = analyser.analyseTextByValues(rawText);
     if (rawText) {
-        let html = highlighter.GetHighlightsHTML(rawText, threshold);
+        let html = highlighter.GetHighlightsHTML(analysis, threshold);
         let highlights = highlighter.GetHighlights(rawText);
 
         return responseHandler.sendSuccessResponse(res, {
@@ -91,7 +96,49 @@ module.exports = (config, ocr) => {
       } else {
           return responseHandler.sendErrorResponse(res, constants.ERROR_RESPONSES.MISSING_PARAMETERS);
       }
-  })
+  });
+
+  app.post("/dev/keywords/dictionary/analyse", (req, res) => {
+      const text = req.body.text;
+      const threshold = req.body.threshold || config.threshold;
+      const keywords = require(path.join(__dirname, devDictionary));
+      const analysis = analyser.injectCustomKeywordsForAnalysis(text, keywords);  
+
+      return analysis ?
+        responseHandler.sendSuccessResponse(res, analysis) :
+        responseHandler.sendErrorResponse(res, "COULD_NOT_ANALYSE_TEXT");    
+  });
+
+  app.get("/dev/keywords/dictionary", (req, res) => {
+      const dict = require(path.join(__dirname, devDictionary));
+      return dict ? 
+        responseHandler.sendSuccessResponse(res, dict) : 
+        responseHandler.sendErrorResponse(res, "COULD_NOT_LOAD_DICTIONARY");
+  });
+
+  app.get("/dev/threshold", (req, res) => {
+      return responseHandler.sendSuccessResponse(res, {threshold: config.threshold});
+  });
+
+  app.post("/dev/keywords/dictionary", (req, res) => {
+      const newDict = req.body.newDict;
+      fs.writeFile(path.join('src', devDictionary), JSON.stringify(newDict, null, 4), (err) => {
+          return err ? 
+            responseHandler.sendErrorResponse(res, "COULD_NOT_WRITE_TO_DEV_DICT", err) :
+            responseHandler.sendSuccessResponse(res)
+      });
+  });
+
+  app.get("/dev/keywords/dictionary/override", (req, res) => {
+      const devDict = require(devDictionaryPath);
+      const authToken = req.headers["auth_token"];
+
+      fs.writeFile(prodDictionaryAPath, JSON.stringify(devDict), (err) => {
+          return err ? 
+            responseHandler.sendErrorResponse(res, "COULD_NOT_WRITE_TO_PROD_DICT", err) :
+            responseHandler.sendSuccessResponse(res);
+      });
+  });
 
   return app
 }

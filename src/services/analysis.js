@@ -80,6 +80,21 @@ const analyseTextByValues = (content, customKeywords) => {
     return results;
 }
 
+function getStatsForAnalysis(threshold, analysis) {
+    let highlighted = 0;
+    analysis.analysis.map(sentenceBreakdown => {
+        if (sentenceBreakdown.totalWordAvg >= threshold) {
+            sentenceBreakdown.isHighlighted = true;
+            highlighted += 1;
+        } 
+        return sentenceBreakdown;
+    });
+
+    return {
+        highlighted: highlighted
+    }
+}
+
 function hasNumber(s) {
     return /\d/.test(s);
 }
@@ -159,6 +174,7 @@ function injectCustomKeywordsForAnalysis(content, keywords) {
 });*/
 
 module.exports = {
+    getStatsForAnalysis,
     analyseText,
     analyseTextByValues,
     analyseTextByRules,

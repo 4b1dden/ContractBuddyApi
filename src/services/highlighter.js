@@ -79,11 +79,10 @@ function GetNotifications(content) {
     return output
 }
 
-function GetHighlightsHTML(content, threshold){
+function GetHighlightsHTML(analysis, threshold){
     output = {}
     output.html = '';
     output.highlights = '';
-    var analysis = analyser.analyseText(content)
 
     analysis.forEach(sentenceObject => {
         sentenceObject.sentence = sentenceObject.sentence.split(" ").map(word => {
