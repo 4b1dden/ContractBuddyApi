@@ -18,7 +18,7 @@ module.exports = (config, ocr) => {
   const prodDictionary = "keywords.json";
 
   // fixing cors error on client in dev env
-  const prod = true;
+  const prod = false;
   app.use(cors({origin: prod ? "https://contractbuddy.herokuapp.com" : "http://localhost:4200"}));
   app.options('*', cors());
 
