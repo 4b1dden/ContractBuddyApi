@@ -10,13 +10,13 @@ function GetNotifications(content) {
     var regexpDateSentence = /\Termination [^.]+(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})/igm
     var regexpDate = /(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})/gm
     var regexpPriorSentence = [
-        /([0-9]+) (day|week|month)*s prior *(?:.(?!\. ))+terminat/igm,
-        / cancel*(?:.(?!\. ))+ ([0-9]+) (day|week|month)*(?:.(?!\. ))+ notice/igm,
-        /([0-9]+) (day|week|month)*(?:.(?!\. ))+ notice (?:.(?!\. ))+ end/igm,
-        / notice *(?:.(?!\. ))+ ([0-9]+) (day|week|month)(?:.(?!\. ))+ end/igm,
-        /([0-9]+) (day|week|month)*(?:.(?!\. ))+ notice (?:.(?!\. ))+ terminat/igm,
-        / end (?:.(?!\. ))+ notice *(?:.(?!\. ))+\s([0-9]+) (day|week|month)/igm,
-        // / notice *(?:.(?!\. ))+ ([0-9]+) (days|weeks|months)/igm,
+        /([0-9]+) (?:[^ ]+ ){0,3}(day|week|month)s* prior (?:.(?!\. ))*terminat/igm,
+        / cancel(?:.(?!\. ))* ([0-9]+) (?:[^ ]+ ){0,3}(day|week|month)(?:.(?!\. ))* notice/igm,
+        /([0-9]+) (?:[^ ]+ ){0,3}(day|week|month)(?:.(?!\. ))* notice (?:.(?!\. ))+ end/igm,
+        / notice(?:.(?!\. ))* ([0-9]+) (?:[^ ]+ ){0,3}(day|week|month)(?:.(?!\. ))+ end/igm,
+        /([0-9]+) (?:[^ ]+ ){0,3}(day|week|month)(?:.(?!\. ))* notice (?:.(?!\. ))+ terminat/igm,
+        / end (?:.(?!\. ))+ notice (?:.(?!\. ))* ([0-9]+) (?:[^ ]+ ){0,3}(day|week|month)/igm,
+        // / notice (?:.(?!\. ))* ([0-9]+) (days|weeks|months)/igm,
     ]
     var regexpPriorDays = /([0-9]+) day/i
     var regexpPriorWeeks = /([0-9]+) week/i
@@ -82,9 +82,11 @@ function GetNotifications(content) {
     }
     console.log(newDates);
     console.log(newPeriods);
-    if (newPeriods.length === 1 && newDates.length === 1) {
-        output.date = newDates[0]
+    if (newPeriods.length === 1) {
         output.priorPeriod = newPeriods[0]
+    }
+    if (newDates.length === 1) {
+        output.date = newDates[0]
     }
     return output
 }
