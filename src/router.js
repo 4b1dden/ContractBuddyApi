@@ -22,6 +22,13 @@ module.exports = (config, ocr) => {
   app.use(cors({origin: prod ? "https://contractbuddy.herokuapp.com" : "http://localhost:4200"}));
   app.options('*', cors());
 
+  if (process.env.NODE_ENV === 'production') {
+	app.use(express.static('client/build'));
+  }
+  app.get('*', (request, response) => {
+	response.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+  });
+
   app.post('/getHighlights/text', (req, res) => {
     const threshold = req.body["threshold"] || config.wordAverageThreshold;
     const rawText = req.body.text;
