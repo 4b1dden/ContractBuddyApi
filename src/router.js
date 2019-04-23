@@ -19,7 +19,7 @@ module.exports = (config, ocr) => {
 
   // fixing cors error on client in dev env
   const prod = true;
-  app.use(cors({origin: prod ? "https://contractbuddy.herokuapp.com" : "http://localhost:4200"}));
+  app.use(cors({origin: prod ? "http://contractbuddy.herokuapp.com" : "http://localhost:4200"}));
   app.options('*', cors());
 
   app.post('/getHighlights/text', (req, res) => {
