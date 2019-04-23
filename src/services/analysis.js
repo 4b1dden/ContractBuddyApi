@@ -27,7 +27,7 @@ const analyseTextByValues = (content, customKeywords) => {
     const keywords = customKeywords || require("../keywords.json");
     const tooltips = require('../tooltips.json');
     let results = [];
-    let sentences = content.split(".");
+    let sentences = content.split(". ");
     sentences.map(sentence => {
         let words = sentence.split(" ");
         let sentenceBreakdown = {
@@ -104,7 +104,7 @@ const analyseTextByRules = (content) => {
     let s = (a) => stemr.stem(a);
 
     let results = [];
-    let sentences = content.split(".");
+    let sentences = content.split(". ");
     sentences.map(sentence => {
         let sentenceBreakdown = {
             sentence: sentence,
