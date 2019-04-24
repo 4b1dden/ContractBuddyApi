@@ -21,7 +21,34 @@ function translateWrittenNumbers(words) {
     return words;
 }
 
+function formatContent(content) {
+    content = content.replace(/ \n/g, ' ');
+    content = content.replace(/\n /g, ' ');
+    content = content.replace(/\n \n/g, '\n');
+    content = content.replace(/\n(\.|\:|\;|\,|\-|\))/g, '.');
+    content = content.replace(/-\n/g, '-');
+    content = content.replace(/\n([^ ]+)\n/g, ' $1 ');
+    content = content.replace(/\n([b-z])\n/g, '$1 ');
+    content = content.replace(/\n([b-z]) /g, '$1 ');
+    content = content.replace(/\n([0-9]{4})\n/g, ' $1 ');
+    content = content.replace(/\n(january|february|march|april|may|june|july|august|september|october|november|december)\n/ig, ' $1 ');
+    content = content.replace(/ •/g, '\r\n•');
+    content = content.replace(/•\n/g, '•');
+    content = content.replace(/( |\n)([^a-z])\n/g, '\n \n$2\n');
+    content = content.replace(/( |\n)([0-9]{1,2}\.? [A-Z])/g, '\n \n$2');
+    content = content.replace(/( |\n)([0-9]{1,2}\.?)\n([A-Z])/g, '\n \n$2 $3');
+    content = content.replace(/( |\n)([A-Z]\.? [A-Z])/g, '\n \n$2');
+    content = content.replace(/( |\n)([A-Z]\.?)\n([A-Z])/g, '\n \n$2 $3');
+    content = content.replace(/( |\n)([a-z]\. [A-Z])/g, '\n \n$2');
+    content = content.replace(/( |\n)([a-z]\.)\n([A-Z])/g, '\n \n$2 $3');
+    content = content.replace(/( |\n)(Part [0-9])/g, '\n \n$2');
+    return content;
+}
+
 const analyseTextByValues = (content, customKeywords) => {
+    
+    content = formatContent(content);
+
     if (typeof content != "string") return [];
 
     const keywords = customKeywords || require("../keywords.json");
@@ -178,5 +205,6 @@ module.exports = {
     analyseText,
     analyseTextByValues,
     analyseTextByRules,
-    injectCustomKeywordsForAnalysis
+    injectCustomKeywordsForAnalysis,
+    formatContent
 }

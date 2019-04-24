@@ -113,12 +113,12 @@ function GetHighlightsHTML(analysis, threshold){
 
         if(sentenceObject.analysis.totalWordAvg >= threshold && !sentenceObject.ignore) {
             output.html += '<font style="background-color: yellow;">' + sentenceObject.sentence + '.</font> '
-            sentenceObjectReplaced = sentenceObject.sentence.replace('<br />', ' ')
-            output.highlights += '<font style="background-color: yellow;">' + sentenceObjectReplaced + '.</font><br />'
+            output.highlights += '<font style="background-color: yellow;">' + sentenceObject.sentence + '. </font>'
         } else {
             output.html += sentenceObject.sentence + '. '
         }
     })
+    output.html = output.html.slice(0, -2)
     return output;
 }
 
