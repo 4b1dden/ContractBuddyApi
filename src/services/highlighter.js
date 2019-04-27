@@ -118,7 +118,7 @@ function GetHighlightsHTML(analysis, threshold){
             output.html += sentenceObject.sentence + '. '
         }
     })
-    output.html = output.html.slice(0, -2)
+    output.html = output.html.slice(0, -2) + '<br /> <br />'
     return output;
 }
 
