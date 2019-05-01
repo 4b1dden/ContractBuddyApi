@@ -12,7 +12,8 @@ module.exports = (config, ocr) => {
   const path = require('path');
   const analyser = require("./services/analysis");
 
-  const app = express.Router();
+  const app = express();                 // define our app using express
+  const router = express.Router();       // get an instance of the express Router
 
   const devDictionary = "keywords_dev.json";
   const prodDictionary = "keywords.json";
@@ -22,7 +23,12 @@ module.exports = (config, ocr) => {
   app.use(cors({origin: prod ? "https://contractbuddy.herokuapp.com" : "http://localhost:4200"}));
   app.options('*', cors());
 
-  app.post('/getHighlights/text', (req, res) => {
+
+  app.get("/", (req, res) => {
+    res.send("service running");
+});
+
+  router.post('/highlights', (req, res) => {
     const threshold = req.body["threshold"] || config.wordAverageThreshold;
     const rawText = req.body.text;
     const analysis = analyser.analyseTextByValues(rawText);
@@ -39,7 +45,7 @@ module.exports = (config, ocr) => {
     }
   });
 
-  app.post('/getNotifications', (req, res) => {
+  router.post('/notifications', (req, res) => {
     const rawText = req.body.text;
     if (rawText) {
         let notifications = highlighter.GetNotifications(rawText);
@@ -53,11 +59,7 @@ module.exports = (config, ocr) => {
     }
   });
 
-  app.get("/", (req, res) => {
-      res.send("service running");
-  })
-
-  app.post('/ocr/upload', (req, res) => {
+  router.post('/ocr/upload', (req, res) => {
     var form = new formidable.IncomingForm()
 
     form.parse(req);
@@ -85,7 +87,7 @@ module.exports = (config, ocr) => {
     })
   });
 
-  app.post("/dev/env/weight", (req, res) => {
+  router.post("/dev/env/weight", (req, res) => {
       const threshold = req.body.threshold;
       const keywords = typeof req.body.keywords == "string" ? JSON.parse(req.body.keywords) : req.body.keywords;
       const text = req.body.text;
@@ -98,7 +100,14 @@ module.exports = (config, ocr) => {
       }
   });
 
-  app.post("/dev/keywords/dictionary/analyse", (req, res) => {
+  router.get("/dev/keywords/dictionary", (req, res) => {
+      const dict = require(path.join(__dirname, devDictionary));
+      return dict ? 
+        responseHandler.sendSuccessResponse(res, dict) : 
+        responseHandler.sendErrorResponse(res, "COULD_NOT_LOAD_DICTIONARY");
+  });
+
+  router.post("/dev/keywords/dictionary", (req, res) => {
       const text = req.body.text;
       const threshold = req.body.threshold || config.threshold;
       const keywords = require(path.join(__dirname, devDictionary));
@@ -109,18 +118,7 @@ module.exports = (config, ocr) => {
         responseHandler.sendErrorResponse(res, "COULD_NOT_ANALYSE_TEXT");    
   });
 
-  app.get("/dev/keywords/dictionary", (req, res) => {
-      const dict = require(path.join(__dirname, devDictionary));
-      return dict ? 
-        responseHandler.sendSuccessResponse(res, dict) : 
-        responseHandler.sendErrorResponse(res, "COULD_NOT_LOAD_DICTIONARY");
-  });
-
-  app.get("/dev/threshold", (req, res) => {
-      return responseHandler.sendSuccessResponse(res, {threshold: config.threshold});
-  });
-
-  app.post("/dev/keywords/dictionary", (req, res) => {
+  router.put("/dev/keywords/dictionary", (req, res) => {
       const newDict = req.body.newDict;
       fs.writeFile(path.join('src', devDictionary), JSON.stringify(newDict, null, 4), (err) => {
           return err ? 
@@ -129,7 +127,11 @@ module.exports = (config, ocr) => {
       });
   });
 
-  app.get("/dev/keywords/dictionary/override", (req, res) => {
+  router.get("/dev/threshold", (req, res) => {
+      return responseHandler.sendSuccessResponse(res, {threshold: config.threshold});
+  });
+
+  router.get("/dev/keywords/dictionary/override", (req, res) => {
       const devDict = require(devDictionaryPath);
       const authToken = req.headers["auth_token"];
 
@@ -140,5 +142,7 @@ module.exports = (config, ocr) => {
       });
   });
 
-  return app
+  app.use('/api', router);
+  
+  return app;
 }
