@@ -123,7 +123,7 @@ module.exports = (config, ocr) => {
       fs.writeFile(path.join('src', devDictionary), JSON.stringify(newDict, null, 4), (err) => {
           return err ? 
             responseHandler.sendErrorResponse(res, "COULD_NOT_WRITE_TO_DEV_DICT", err) :
-            responseHandler.sendSuccessResponse(res)
+            responseHandler.sendSuccessResponse(res, newDict)
       });
   });
 
