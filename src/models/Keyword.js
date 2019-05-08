@@ -1,7 +1,6 @@
-const _mongoose = require('mongoose')
+const mongoose = require('mongoose')
 
-module.exports = function(mongoose){
-  return mongoose.model('Keyword', { 
+module.exports = mongoose.model('Keyword', { 
     stem: {
       type: String,
       required: true
@@ -15,8 +14,7 @@ module.exports = function(mongoose){
       required: false
     },
     clause: {
-      type: _mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       required: true
     }
   })
-}

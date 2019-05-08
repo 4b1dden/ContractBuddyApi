@@ -1,3 +1,1 @@
-module.exports = function(mongoose){
-  return mongoose.model('User', { id: String, googleData: {} })
-}
+module.exports = mongoose.model('User', { id: String, googleData: {} })

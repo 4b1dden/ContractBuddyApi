@@ -11,6 +11,7 @@ module.exports = (config, ocr) => {
   const fs = require('fs');
   const path = require('path');
   const analyser = require("./services/analysis");
+  const mongoHelper = require('./services/mongoHelper');
 
   const app = express();                 // define our app using express
   const router = express.Router();       // get an instance of the express Router
@@ -141,6 +142,24 @@ module.exports = (config, ocr) => {
             responseHandler.sendSuccessResponse(res);
       });
   });
+
+  router.get("/dev/keywords/db/clauses/upload", (req, res) => {
+      const keywords = require(path.join(__dirname, devDictionary));
+      mongoHelper.buildClausesDb(keywords).then(f => {
+          res.status(200)
+          res.send("Finished building db")
+          console.log("Finished building db");
+      })     
+  });
+
+  router.get("/dev/keywords/db/keywords/upload", (req, res) => {
+      const keywords = require(path.join(__dirname, devDictionary));
+      mongoHelper.insertKeywords(keywords).then(f => {
+          res.status(200);
+          res.send("finished inserting keywords to db")
+          console.log("finished inserting keywords to db")
+      }).catch(e => console.log(e));
+  })
 
   app.use('/api', router);
   
