@@ -100,7 +100,7 @@ module.exports = (config, ocr, db) => {
   router.post('/dev/uploadDoc', (req, res) => {
     saveDoc(req.body.name, req.body.content, +req.body.date, req.body.comment)
 
-    res.send('sure')
+    res.send('sure' + req.body.date + '-' + +req.body.date)
   })
   router.post('/dev/getDoc', async (req, res) => {
     res.json(await Docs.findOne({ name: req.body.name }))
