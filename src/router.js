@@ -88,17 +88,17 @@ module.exports = (config, ocr, db) => {
     })
   });
 
-  var Docs = db.mongoose.model('Doc', { name: String, content: String, dates: [Number], comment: String })
+  var Docs = db.mongoose.model('Doc', { name: String, content: String, date: Number, comment: String })
 
-  function saveDoc(name, content, dates, comment){
-    (new Docs({ name, content, dates, comment })).save()
+  function saveDoc(name, content, date, comment){
+    (new Docs({ name, content, date, comment })).save()
   }
 
   router.get('/dev', (req, res) => {
     res.send('yep, dev')
   })
   router.post('/dev/uploadDoc', (req, res) => {
-    saveDoc(req.body.name.toString(), req.body.content.toString(), req.body.dates, req.body.comment)
+    saveDoc(req.body.name.toString(), req.body.content.toString(), +req.body.date, req.body.comment.toString())
 
     res.send('sure')
   })
