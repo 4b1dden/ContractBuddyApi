@@ -104,10 +104,10 @@ module.exports = (config, ocr, db) => {
     console.log(req.body)
     saveDoc(req.body.name, req.body.content, +req.body.date, req.body.comment)
 
-    res.send('sure' + req.body.date + '-' + +req.body.date + '-' + JSON.stringify(req.body))
+    res.send('sure,' + req.body.date + '-' + +req.body.date + '-' + JSON.stringify(req.body))
   })
-  router.post('/dev/getDoc', async (req, res) => {
-    res.json(await Docs.findOne({ name: req.body.name }))
+  router.post('/dev/getDocsByName', async (req, res) => {
+    res.json(await Docs.find({ name: req.body.name }))
   })
   router.post('/dev/getDocsNames', async (req, res) => {
     res.json((await Docs.find()).map(c => c.name))
