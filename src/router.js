@@ -98,7 +98,7 @@ module.exports = (config, ocr, db) => {
     res.send('yep, dev')
   })
   router.post('/dev/uploadDoc', (req, res) => {
-    saveDoc(req.body.name.toString(), req.body.content.toString(), +req.body.date, req.body.comment.toString())
+    saveDoc(req.body.name, req.body.content, +req.body.date, req.body.comment)
 
     res.send('sure')
   })
