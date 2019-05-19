@@ -1,5 +1,6 @@
 module.exports = (config, ocr, db) => {
   const express = require('express');
+  var bodyParser = require('body-parser')
   const formidable = require('formidable');
   const tooltips = require('./tooltips.json');
   const PDFParser = require('pdf2json');
@@ -24,6 +25,8 @@ module.exports = (config, ocr, db) => {
   app.use(cors({origin: prod ? "https://contractbuddy.herokuapp.com" : "http://localhost:4200"}));
   app.options('*', cors());
 
+  router.use(bodyParser.json())
+  router.use(bodyParser.urlencoded({ extended: true }))
 
   app.get("/", (req, res) => {
     res.send("service running");
@@ -98,7 +101,7 @@ module.exports = (config, ocr, db) => {
     res.send('yep, dev')
   })
   router.post('/dev/uploadDoc', (req, res) => {
-      console.log(req.body)
+    console.log(req.body)
     saveDoc(req.body.name, req.body.content, +req.body.date, req.body.comment)
 
     res.send('sure' + req.body.date + '-' + +req.body.date + '-' + JSON.stringify(req.body))
