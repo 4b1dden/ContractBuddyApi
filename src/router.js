@@ -94,6 +94,9 @@ module.exports = (config, ocr, db) => {
     (new Docs({ name, content, dates, comment })).save()
   }
 
+  router.get('/dev', (req, res) => {
+    res.send('yep, dev')
+  })
   router.post('/dev/uploadDoc', (req, res) => {
     saveDoc(req.body.name.toString(), req.body.content.toString(), req.body.dates, req.body.comment)
 
