@@ -1,4 +1,4 @@
-module.exports = (config, ocr) => {
+module.exports = (config, ocr, db) => {
   const express = require('express');
   const formidable = require('formidable');
   const tooltips = require('./tooltips.json');
@@ -27,7 +27,7 @@ module.exports = (config, ocr) => {
 
   app.get("/", (req, res) => {
     res.send("service running");
-});
+  });
 
   router.post('/highlights', (req, res) => {
     const threshold = req.body["threshold"] || config.wordAverageThreshold;
@@ -88,6 +88,23 @@ module.exports = (config, ocr) => {
     })
   });
 
+  var Docs = db.mongoose.model('Doc', { name: String, content: String, dates: [Number], comment: String })
+
+  function saveDoc(name, content, dates, comment){
+    (new Docs({ name, content, dates, comment })).save()
+  }
+
+  router.post('/dev/uploadDoc', (req, res) => {
+    saveDoc(req.body.name.toString(), req.body.content.toString(), req.body.dates, req.body.comment)
+
+    res.send('sure')
+  })
+  router.post('/dev/getDoc', async (req, res) => {
+    res.json(await Docs.findOne({ name: req.body.name }))
+  })
+  router.post('/dev/getDocsNames', async (req, res) => {
+    res.json((await Docs.find()).map(c => c.name))
+  })
   router.post("/dev/env/weight", (req, res) => {
       const threshold = req.body.threshold;
       const keywords = typeof req.body.keywords == "string" ? JSON.parse(req.body.keywords) : req.body.keywords;

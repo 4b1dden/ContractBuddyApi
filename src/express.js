@@ -3,9 +3,9 @@ module.exports = (config, ocr, db) => {
   var bodyParser = require('body-parser')
 
   var googleAuth = require('./services/googleAuth.js')(config, db)
-  var router = require('./router.js')(config, ocr)
+  var router = require('./router.js')(config, ocr, db)
   var app = express()
-  
+
   app.set('view engine', 'ejs')
   app.set('views', config.viewsPath)
 
